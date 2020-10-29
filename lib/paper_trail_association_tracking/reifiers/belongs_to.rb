@@ -43,7 +43,7 @@ module PaperTrailAssociationTracking
           assoc_klass.paper_trail.version_class.
             where("item_type = ?", assoc_klass.base_class.name).
             where("item_id = ?", id).
-            where("created_at >= ? OR transaction_id = ?", version_at, transaction_id).
+            where("created_at > ? OR transaction_id = ?", version_at, transaction_id).
             order("id").limit(1).first
         end
       end

@@ -158,4 +158,26 @@ RSpec.describe(::PaperTrail, versioning: true) do
       expect(order).to be_marked_for_destruction
     end
   end
+
+  describe "customer updated with same timestamp" do
+    it "something" do
+      customer = nil
+      # Freezing time simluates transaction with limited timestamp precision,
+      # where second transation's timestamp will get rounded to same value
+      Timecop.freeze do
+        Customer.transaction do
+          customer = Customer.create(name: "customer_0")
+          customer.orders.create!(order_date: Date.today)
+        end
+        Customer.transaction do
+          customer.update!(name: "customer_1")
+        end
+      end
+
+      customer0 = customer.versions.last.reify(has_many: true, mark_for_destruction: true)
+      expect(customer0.name).to eq("customer_0")
+      expect(customer0.orders[0]).not_to be_marked_for_destruction
+    end
+  end
+
 end

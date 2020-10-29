@@ -87,7 +87,7 @@ module PaperTrailAssociationTracking
             where("item_type = ?", assoc.klass.base_class.name).
             where("item_id IN (?)", ids).
             where(
-              "created_at >= ? OR transaction_id = ?",
+              "created_at > ? OR transaction_id = ?",
               version_at,
               tx_id
             ).
