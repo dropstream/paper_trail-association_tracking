@@ -101,9 +101,10 @@ module PaperTrailAssociationTracking
             where("foreign_key_id = ?", model.id).
             where(foreign_type: [model.class.name, nil]).
             where("#{version_table}.item_type = ?", assoc.klass.base_class.name).
-            where("created_at > ? OR transaction_id >= ?", version_at, tx_id).
+            where("transaction_id >= ?", tx_id).
             group("item_id").
             map{|e| e.version_id}
+
           versions_by_id(model.class, version_ids)
         end
       end
